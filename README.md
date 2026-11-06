@@ -21,6 +21,12 @@ network config) comes straight from upstream.
 | `images/debian.yaml` | Debian 13 (Trixie) cloud VM | `solstice/debian/13/cloud` |
 | `images/ubuntu.yaml` | Ubuntu 24.04 LTS (Noble Numbat) cloud VM | `solstice/ubuntu/24.04/cloud` |
 
+## Architectures
+
+Only **amd64** and **arm64** are built. Other upstream architectures
+(armhf, riscv64, ppc64le, s390x, ...) are intentionally skipped — no
+nodes need them. `scripts/build.sh` rejects any other architecture.
+
 ## Build
 
 Requirements: `distrobuilder` (>= 3.0), `qemu-img`, `debootstrap`,
@@ -28,11 +34,12 @@ Requirements: `distrobuilder` (>= 3.0), `qemu-img`, `debootstrap`,
 privileged container).
 
 ```sh
-# VM (cloud) image
+# VM (cloud) image — amd64 or arm64 only
 sudo distrobuilder build-incus images/debian.yaml --vm -o image.release=trixie -o image.architecture=amd64
+sudo distrobuilder build-incus images/debian.yaml --vm -o image.release=trixie -o image.architecture=arm64
 
 # Container image
-sudo distrobuilder build-incus images/debian.yaml -o image.release=trixie
+sudo distrobuilder build-incus images/debian.yaml -o image.release=trixie -o image.architecture=amd64
 ```
 
 This produces `incus.tar.xz` + `rootfs.qcow2` (VM) / `rootfs.squashfs`
@@ -41,8 +48,9 @@ This produces `incus.tar.xz` + `rootfs.qcow2` (VM) / `rootfs.squashfs`
 Or use the wrapper:
 
 ```sh
-./scripts/build.sh debian trixie        # VM image
-./scripts/build.sh ubuntu noble --container
+./scripts/build.sh debian trixie amd64          # VM image
+./scripts/build.sh ubuntu noble arm64           # VM image, arm64
+./scripts/build.sh ubuntu noble amd64 --container
 ```
 
 ## Publish (simplestreams)
