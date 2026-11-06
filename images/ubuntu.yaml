@@ -460,6 +460,12 @@ packages:
   cleanup: true
   sets:
   - packages:
+    - fuse
+    releases:
+    - focal
+    action: install
+
+  - packages:
     - fuse3
     releases:
     - jammy

@@ -1163,6 +1163,7 @@ packages:
   - packages:
     - isc-dhcp-client
     releases:
+    - bullseye
     - bookworm
     - trixie
     action: install
@@ -1193,6 +1194,23 @@ packages:
     action: install
     variants:
     - cloud
+
+  - packages:
+    - resolvconf
+    action: install
+    variants:
+    - cloud
+    releases:
+    - bullseye
+
+  - packages:
+    - policykit-1
+    action: install
+    architectures:
+    - amd64
+    - arm64
+    releases:
+    - bullseye
 
   - packages:
     - polkitd
@@ -1343,6 +1361,44 @@ actions:
     #!/bin/sh
     set -eux
 
+    # Disable networkd service; this prevents the container from getting 2 IPv4 addresses on
+    # startup. This only happens on debian/bullseye/cloud images.
+    systemctl disable systemd-networkd.socket
+    systemctl disable systemd-networkd.service
+  variants:
+  - cloud
+  releases:
+  - bullseye
+
+- trigger: post-packages
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    # Enable systemd-resolved
+    systemctl enable systemd-resolved.service
+  variants:
+  - default
+  releases:
+  - bullseye
+
+- trigger: post-packages
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    # Disable systemd-resolved
+    systemctl disable systemd-resolved.service
+  variants:
+  - cloud
+  releases:
+  - bullseye
+
+- trigger: post-packages
+  action: |-
+    #!/bin/sh
+    set -eux
+
     # Make sure the locale is built and functional
     echo en_US.UTF-8 UTF-8 >> /etc/locale.gen
     locale-gen en_US.UTF-8 UTF-8
@@ -1435,6 +1491,30 @@ actions:
   - bookworm
   - trixie
   - forky
+
+- trigger: post-files
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    umount -l /etc/resolv.conf || true
+    ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+  releases:
+  - bullseye
+  variants:
+  - default
+
+- trigger: post-files
+  action: |-
+    #!/bin/sh
+    set -eux
+
+    umount -l /etc/resolv.conf || true
+    ln -sf /run/resolvconf/resolv.conf /etc/resolv.conf
+  releases:
+  - bullseye
+  variants:
+  - cloud
 
 mappings:
   architecture_map: debian

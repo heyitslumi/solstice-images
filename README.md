@@ -16,10 +16,20 @@ network config) comes straight from upstream.
 
 ## Images
 
-| File | Image | Alias (planned) |
+| File | Releases | Alias pattern (planned) |
 | --- | --- | --- |
-| `images/debian.yaml` | Debian 13 (Trixie) cloud VM | `solstice/debian/13/cloud` |
-| `images/ubuntu.yaml` | Ubuntu 24.04 LTS (Noble Numbat) cloud VM | `solstice/ubuntu/24.04/cloud` |
+| `images/debian.yaml` | Debian 11 (Bullseye), 12 (Bookworm), 13 (Trixie) | `solstice/debian/<11\|12\|13>/cloud` |
+| `images/ubuntu.yaml` | Ubuntu 20.04 (Focal), 22.04 (Jammy), 24.04 (Noble), 26.04 (Resolute) | `solstice/ubuntu/<20.04\|22.04\|24.04\|26.04>/cloud` |
+
+All releases are built from the same definition per distro —
+the release is a build-time option (`-o image.release=...`), so
+there is one yaml per distro, not per release.
+
+> Note: Debian Bullseye and Ubuntu Focal support was restored from
+> older upstream revisions (lxc-ci dropped bullseye on 2026-09-06
+> and focal on 2025-06-28). If an old release stops building
+> upstream, check the bullseye/focal-specific blocks in the yamls
+> first.
 
 ## Architectures
 
@@ -48,8 +58,13 @@ This produces `incus.tar.xz` + `rootfs.qcow2` (VM) / `rootfs.squashfs`
 Or use the wrapper:
 
 ```sh
-./scripts/build.sh debian trixie amd64          # VM image
-./scripts/build.sh ubuntu noble arm64           # VM image, arm64
+./scripts/build.sh debian bullseye amd64        # Debian 11
+./scripts/build.sh debian bookworm arm64        # Debian 12, arm64
+./scripts/build.sh debian trixie amd64          # Debian 13
+./scripts/build.sh ubuntu focal amd64           # Ubuntu 20.04
+./scripts/build.sh ubuntu jammy arm64           # Ubuntu 22.04, arm64
+./scripts/build.sh ubuntu noble amd64           # Ubuntu 24.04
+./scripts/build.sh ubuntu resolute amd64        # Ubuntu 26.04
 ./scripts/build.sh ubuntu noble amd64 --container
 ```
 
