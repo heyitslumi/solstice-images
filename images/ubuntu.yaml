@@ -237,8 +237,6 @@ source:
     9D075ubd/JquyeE97TWuWxHGoGIrUk7D+DgaelfyIsYRfVU=
     =384X
     -----END PGP PUBLIC KEY BLOCK-----
-
-  # 0xf6ecb3762474eda9d21b7022871920d1991bc93c
   - |-
     -----BEGIN PGP PUBLIC KEY BLOCK-----
 
@@ -281,7 +279,6 @@ source:
     DaOLQ1w=
     =VTg2
     -----END PGP PUBLIC KEY BLOCK-----
-
 targets:
   lxc:
     create_message: |-
@@ -321,18 +318,12 @@ files:
     Welcome to Solstice - Ubuntu 24.04 LTS (Noble Numbat) cloud image.
   types:
   - vm
-  variants:
-  - cloud
-
 - path: /etc/issue.net
   generator: dump
   content: |-
     Solstice - Ubuntu 24.04 LTS (Noble Numbat)
   types:
   - vm
-  variants:
-  - cloud
-
 - path: /etc/cloud/cloud.cfg.d/99-solstice.cfg
   generator: dump
   content: |-
@@ -341,9 +332,6 @@ files:
     ssh_pwauth: true
   types:
   - vm
-  variants:
-  - cloud
-
 - path: /etc/hostname
   generator: hostname
 
@@ -363,67 +351,22 @@ files:
 - path: /var/lib/dbus/machine-id
   generator: remove
 
-- path: /etc/netplan/10-lxc.yaml
-  generator: dump
-  mode: 0600
-  content: |-
-    network:
-      version: 2
-      ethernets:
-        eth0:
-          dhcp4: true
-          dhcp-identifier: mac
-  types:
-  - container
-  variants:
-  - default
-
-- path: /etc/netplan/10-lxc.yaml
-  generator: dump
-  mode: 0600
-  content: |-
-    network:
-      version: 2
-      ethernets:
-        enp5s0:
-          dhcp4: true
-          dhcp-identifier: mac
-  types:
-  - vm
-  variants:
-  - default
-  - desktop
-
 - name: meta-data
   generator: cloud-init
-  variants:
-  - cloud
-
 - name: network-config
   generator: cloud-init
-  variants:
-  - cloud
-
 - name: user-data
   generator: cloud-init
-  variants:
-  - cloud
-
 - name: vendor-data
   generator: cloud-init
-  variants:
-  - cloud
-
 - name: ext4
   generator: fstab
   types:
   - vm
-
 - name: incus-agent
   generator: incus-agent
   types:
   - vm
-
 - path: /etc/default/grub.d/50-incus.cfg
   generator: dump
   content: |-
@@ -433,27 +376,6 @@ files:
     GRUB_TERMINAL=console
   types:
   - vm
-
-- path: /etc/sudoers.d/90-incus
-  generator: dump
-  mode: 0440
-  content: |-
-    # User rules for ubuntu
-    ubuntu ALL=(ALL) NOPASSWD:ALL
-  variants:
-    - default
-
-- path: /etc/sudoers.d/90-incus
-  generator: dump
-  mode: 0440
-  content: |-
-    # User rules for ubuntu
-    ubuntu ALL=(ALL) NOPASSWD:ALL
-  variants:
-  - desktop
-  types:
-  - vm
-
 packages:
   manager: apt
   update: true
@@ -491,20 +413,15 @@ packages:
     - powerpc
     - powerpc64
     - s390x
-
   - packages:
     - language-pack-en
     action: install
     architectures:
     - ppc64el
-
   - packages:
     - cloud-init
     - python3-debian
     action: install
-    variants:
-    - cloud
-
   - packages:
     - systemd-resolved
     action: install
@@ -512,14 +429,12 @@ packages:
     - noble
     - resolute
     - stonking
-
   - packages:
     - systemd-timesyncd
     action: install
     releases:
     - resolute
     - stonking
-
   - packages:
     - grub-efi-amd64-signed
     - shim-signed
@@ -528,7 +443,6 @@ packages:
     - amd64
     types:
     - vm
-
   - packages:
     - grub-efi-arm64-signed
     action: install
@@ -536,7 +450,6 @@ packages:
     - arm64
     types:
     - vm
-
   - packages:
     - shim-signed
     action: install
@@ -544,33 +457,21 @@ packages:
     - arm64
     types:
     - vm
-
   - packages:
     - linux-image-virtual
     action: install
     types:
     - vm
-
   - packages:
     - os-prober
     action: remove
     types:
     - vm
-
   - packages:
     - cloud-guest-utils
     action: install
     types:
     - vm
-
-  - packages:
-    - ubuntu-desktop-minimal
-    action: install
-    variants:
-    - desktop
-    types:
-    - vm
-
   repositories:
   - name: sources.list
     url: |-
@@ -580,7 +481,6 @@ packages:
     architectures:
     - amd64
     - i386
-
   - name: sources.list
     url: |-
       deb http://ports.ubuntu.com/ubuntu-ports {{ image.release }} main restricted universe multiverse
@@ -594,7 +494,6 @@ packages:
     - ppc64el
     - riscv64
     - s390x
-
 actions:
 - trigger: post-unpack
   action: |-
@@ -614,17 +513,6 @@ actions:
     # Remove the immutable flag.
     [ ! -d /run/systemd ] && exit 0
     chattr -i /run/systemd
-
-- trigger: post-update
-  action: |-
-    #!/bin/sh
-    set -eux
-
-    # Create the ubuntu user account
-    getent group sudo >/dev/null 2>&1 || groupadd --system sudo
-    useradd --create-home -s /bin/bash -G sudo -U ubuntu
-  variants:
-  - default
 
 - trigger: post-packages
   action: |-
@@ -650,7 +538,6 @@ actions:
   - noble
   - resolute
   - stonking
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -689,102 +576,5 @@ actions:
     sed -i "s#root=[^ ]*#root=${DISTROBUILDER_ROOT_UUID}#g" /boot/grub/grub.cfg
   types:
   - vm
-
-- trigger: post-files
-  action: |-
-    #!/bin/sh
-    set -eux
-
-    # Automatic disk resize
-    cat << EOF > /etc/systemd/system/incus-growpart.service
-    [Unit]
-    Description=Incus - grow root partition
-
-    [Service]
-    Type=oneshot
-    ExecStartPre=-/usr/bin/growpart /dev/sda 2
-    ExecStart=/sbin/resize2fs /dev/sda2
-
-    [Install]
-    WantedBy=default.target
-    EOF
-
-    systemctl enable incus-growpart
-  types:
-  - vm
-  variants:
-  - default
-  - desktop
-
-- trigger: post-packages
-  action: |-
-    #!/bin/sh
-    set -eux
-
-    # Disable location service
-    systemctl mask geoclue.service
-
-    # Timezone
-    rm -f /etc/localtime
-    ln -s /usr/share/zoneinfo/UTC /etc/localtime
-    echo UTC > /etc/timezone
-
-    # Locale
-    echo en_US.UTF-8 UTF-8 > /etc/locale.gen
-    locale-gen
-    echo LANG=en_US.UTF-8 > /etc/locale.conf
-
-    # User
-    USERNAME="ubuntu"
-    useradd ${USERNAME} -s /bin/bash -m -U -G adm,video,users
-
-    cat << EOF > /etc/gdm3/custom.conf
-    [daemon]
-    AutomaticLogin=${USERNAME}
-    AutomaticLoginEnable=true
-    EOF
-
-    cat << EOF > /home/ubuntu/firstboot.sh
-    #!/bin/sh
-
-    set -e
-
-    # Disable automatic screensaver lock
-    gsettings set org.gnome.desktop.screensaver lock-enabled false
-
-    # Disable welcome tour.
-    gsettings set org.gnome.shell welcome-dialog-last-shown-version '4294967295'
-
-    # Delete this script
-    rm /home/ubuntu/firstboot.sh
-    EOF
-
-    chown ubuntu:ubuntu /home/ubuntu/firstboot.sh
-    chmod +x /home/ubuntu/firstboot.sh
-
-    cat << EOF > /etc/systemd/user/firstboot.service
-    [Unit]
-    Description=One time boot script
-    After=dbus.service
-    After=display-manager.service
-    ConditionPathExists=/home/ubuntu/firstboot.sh
-
-    [Service]
-    Type=oneshot
-    ExecStart=/home/ubuntu/firstboot.sh
-
-    [Install]
-    WantedBy=default.target
-    EOF
-
-    mkdir -p /home/ubuntu/.config/systemd/user/default.target.wants
-    ln -s /etc/systemd/user/firstboot.service /home/ubuntu/.config/systemd/user/default.target.wants/firstboot.service
-
-    chown -R ubuntu:ubuntu /home/ubuntu/.config
-  variants:
-  - desktop
-  types:
-  - vm
-
 mappings:
   architecture_map: debian

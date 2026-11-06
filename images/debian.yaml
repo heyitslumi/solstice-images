@@ -202,8 +202,6 @@ source:
     tizqJW3oSFiqIcpiyfN+0rLetGa0WslDnSIhyclfxOPMH14=
     =k46C
     -----END PGP PUBLIC KEY BLOCK-----
-
-  # 0xA1BD8E9D78F7FE5C3E65D8AF8B48AD6246925553
   - |-
     -----BEGIN PGP PUBLIC KEY BLOCK-----
 
@@ -552,8 +550,6 @@ source:
     qCTHsZBLcjOQhV5Ubg==
     =L+5x
     -----END PGP PUBLIC KEY BLOCK-----
-
-  # 0x6D33866EDD8FFA41C0143AEDDCC9EFBF77E11517
   - |-
     -----BEGIN PGP PUBLIC KEY BLOCK-----
 
@@ -608,8 +604,6 @@ source:
     idjr8CGNeffTyeMJbSniGisGOkhiX9TLbz8ufw==
     =a2kx
     -----END PGP PUBLIC KEY BLOCK-----
-
-  # 0x80D15823B7FD1561F9F7BCDDDC30D7C23CBBABEE
   - |-
     -----BEGIN PGP PUBLIC KEY BLOCK-----
 
@@ -785,8 +779,6 @@ source:
     qn8+ouVQUr65+xcIST13Ffg80zc=
     =lfn1
     -----END PGP PUBLIC KEY BLOCK-----
-
-  # 0xE852514F5DF312F6
   - |-
     -----BEGIN PGP PUBLIC KEY BLOCK-----
 
@@ -818,8 +810,6 @@ source:
     oPh9t/VGRvdQHA==
     =KM28
     -----END PGP PUBLIC KEY BLOCK-----
-
-  # 0xB7C5D7D6350947F8
   - |-
     -----BEGIN PGP PUBLIC KEY BLOCK-----
 
@@ -947,8 +937,6 @@ source:
     22lSkijKki64QmcUnp84EDZQdk+myhnGBqi+yw==
     =swbo
     -----END PGP PUBLIC KEY BLOCK-----
-
-  # loong64
   - |-
     -----BEGIN PGP PUBLIC KEY BLOCK-----
 
@@ -960,7 +948,6 @@ source:
     9/pnDQ==
     =EKk4
     -----END PGP PUBLIC KEY BLOCK-----
-
   variant: minbase
 
 targets:
@@ -1002,18 +989,12 @@ files:
     Welcome to Solstice - Debian 13 (Trixie) cloud image.
   types:
   - vm
-  variants:
-  - cloud
-
 - path: /etc/issue.net
   generator: dump
   content: |-
     Solstice - Debian 13 (Trixie)
   types:
   - vm
-  variants:
-  - cloud
-
 - path: /etc/cloud/cloud.cfg.d/99-solstice.cfg
   generator: dump
   content: |-
@@ -1022,9 +1003,6 @@ files:
     ssh_pwauth: true
   types:
   - vm
-  variants:
-  - cloud
-
 - path: /etc/hostname
   generator: hostname
 
@@ -1044,46 +1022,6 @@ files:
 - path: /var/lib/dbus/machine-id
   generator: remove
 
-- path: /etc/systemd/network/eth0.network
-  generator: dump
-  content: |-
-    [Match]
-    Name=eth0
-
-    [Network]
-    DHCP=true
-
-    [DHCPv4]
-    UseDomains=true
-    UseMTU=true
-
-    [DHCP]
-    ClientIdentifier=mac
-  types:
-  - container
-  variants:
-  - default
-
-- path: /etc/systemd/network/enp5s0.network
-  generator: dump
-  content: |-
-    [Match]
-    Name=enp5s0
-
-    [Network]
-    DHCP=true
-
-    [DHCPv4]
-    UseDomains=true
-    UseMTU=true
-
-    [DHCP]
-    ClientIdentifier=mac
-  types:
-  - vm
-  variants:
-  - default
-
 - path: /etc/default/grub.d/50-incus.cfg
   generator: dump
   content: |-
@@ -1100,7 +1038,6 @@ files:
     GRUB_TERMINAL=console
   types:
   - vm
-
 - path: /etc/dracut.conf.d/incus.conf
   generator: dump
   content: |-
@@ -1109,36 +1046,21 @@ files:
   - vm
   releases:
   - forky
-
 - name: meta-data
   generator: cloud-init
-  variants:
-  - cloud
-
 - name: network-config
   generator: cloud-init
-  variants:
-  - cloud
-
 - name: user-data
   generator: cloud-init
-  variants:
-  - cloud
-
 - name: vendor-data
   generator: cloud-init
-  variants:
-  - cloud
-
 - name: incus-agent
   generator: incus-agent
   types:
   - vm
-
 - generator: fstab
   types:
   - vm
-
 packages:
   manager: apt
   update: true
@@ -1176,7 +1098,6 @@ packages:
     - loong64
     releases:
     - trixie
-
   - packages:
     - dbus
     - systemd-resolved
@@ -1186,23 +1107,16 @@ packages:
     - bookworm
     - trixie
     - forky
-
   - packages:
     - cloud-init
     - gpg
     - python3-debian
     action: install
-    variants:
-    - cloud
-
   - packages:
     - resolvconf
     action: install
-    variants:
-    - cloud
     releases:
     - bullseye
-
   - packages:
     - policykit-1
     action: install
@@ -1211,7 +1125,6 @@ packages:
     - arm64
     releases:
     - bullseye
-
   - packages:
     - polkitd
     action: install
@@ -1221,7 +1134,6 @@ packages:
     releases:
     - trixie
     - forky
-
   - packages:
     - pkexec
     action: install
@@ -1232,7 +1144,6 @@ packages:
     - bookworm
     - trixie
     - forky
-
   - packages:
     - grub-efi
     action: install
@@ -1240,7 +1151,6 @@ packages:
     - vm
     architectures:
     - amd64
-
   - packages:
     - linux-image-amd64
     action: install
@@ -1248,7 +1158,6 @@ packages:
     - vm
     architectures:
     - amd64
-
   - packages:
     - grub-efi-arm64
     - linux-image-arm64
@@ -1257,7 +1166,6 @@ packages:
     - vm
     architectures:
     - arm64
-
   - packages:
     - grub-efi-loong64
     - linux-image-loong64
@@ -1266,13 +1174,11 @@ packages:
     - vm
     architectures:
     - loong64
-
   - packages:
     - cloud-guest-utils
     action: install
     types:
     - vm
-
   - packages:
     - shim-signed
     action: install
@@ -1281,15 +1187,11 @@ packages:
     architectures:
     - amd64
     - arm64
-
   - packages:
     - netplan.io
     action: install
-    variants:
-    - cloud
     releases:
     - forky
-
   repositories:
   - name: sources.list
     url: |-
@@ -1301,7 +1203,6 @@ packages:
     - arm64
     - armhf
     - riscv64
-
   - name: sources.list
     url: |-
       deb https://loong13.debian.net/debian-loong64/ {{ image.release }} main contrib
@@ -1311,7 +1212,6 @@ packages:
     - loong64
     releases:
     - trixie
-
   - name: sources.list
     url: |-
       deb http://deb.debian.org/debian {{ image.release }} main contrib
@@ -1321,7 +1221,6 @@ packages:
     - loong64
     releases:
     - forky
-
 actions:
 - trigger: post-unpack
   action: |-
@@ -1331,9 +1230,6 @@ actions:
     cat /etc/resolv.conf > /tmp/resolv.conf
     umount -l /etc/resolv.conf || true
     mv /tmp/resolv.conf /etc/
-
-  variants:
-  - cloud
 
 - trigger: post-packages
   action: |-
@@ -1355,7 +1251,6 @@ actions:
   - bookworm
   - trixie
   - forky
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -1365,23 +1260,8 @@ actions:
     # startup. This only happens on debian/bullseye/cloud images.
     systemctl disable systemd-networkd.socket
     systemctl disable systemd-networkd.service
-  variants:
-  - cloud
   releases:
   - bullseye
-
-- trigger: post-packages
-  action: |-
-    #!/bin/sh
-    set -eux
-
-    # Enable systemd-resolved
-    systemctl enable systemd-resolved.service
-  variants:
-  - default
-  releases:
-  - bullseye
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -1389,11 +1269,8 @@ actions:
 
     # Disable systemd-resolved
     systemctl disable systemd-resolved.service
-  variants:
-  - cloud
   releases:
   - bullseye
-
 - trigger: post-packages
   action: |-
     #!/bin/sh
@@ -1420,7 +1297,6 @@ actions:
   releases:
   - trixie
   - forky
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -1431,7 +1307,6 @@ actions:
   - vm
   releases:
   - forky
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -1454,32 +1329,6 @@ actions:
     sed -i "s#root=[^ ]*#root=${DISTROBUILDER_ROOT_UUID}#g" /boot/grub/grub.cfg
   types:
   - vm
-
-- trigger: post-files
-  action: |-
-    #!/bin/sh
-    set -eux
-
-    # Automatic disk resize
-    cat << EOF > /etc/systemd/system/incus-growpart.service
-    [Unit]
-    Description=Incus - grow root partition
-
-    [Service]
-    Type=oneshot
-    ExecStartPre=-/usr/bin/growpart /dev/sda 2
-    ExecStart=/sbin/resize2fs /dev/sda2
-
-    [Install]
-    WantedBy=default.target
-    EOF
-
-    systemctl enable incus-growpart
-  types:
-  - vm
-  variants:
-  - default
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -1491,19 +1340,6 @@ actions:
   - bookworm
   - trixie
   - forky
-
-- trigger: post-files
-  action: |-
-    #!/bin/sh
-    set -eux
-
-    umount -l /etc/resolv.conf || true
-    ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
-  releases:
-  - bullseye
-  variants:
-  - default
-
 - trigger: post-files
   action: |-
     #!/bin/sh
@@ -1513,8 +1349,5 @@ actions:
     ln -sf /run/resolvconf/resolv.conf /etc/resolv.conf
   releases:
   - bullseye
-  variants:
-  - cloud
-
 mappings:
   architecture_map: debian

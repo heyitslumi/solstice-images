@@ -14,6 +14,10 @@ definitions in [lxc/lxc-ci](https://github.com/lxc/lxc-ci/tree/main/images)
 Everything else (packages, cloud-init templates, growpart, incus-agent,
 network config) comes straight from upstream.
 
+Only the `cloud` variant is kept — upstream `default`/`desktop`
+variant blocks were stripped from the definitions, since Solstice
+only builds cloud-init images.
+
 ## Images
 
 | File | Releases | Alias pattern (planned) |
